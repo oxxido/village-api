@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4a9b1ef7bfdecb0271a521a16c1f7be3",
+    "content-hash": "c7055a03216466062eb9b041a5b61ab9",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -1576,6 +1576,36 @@
                 "simple-cache"
             ],
             "time": "2017-01-02T13:31:39+00:00"
+        },
+        {
+            "name": "sleiman/airtable-php",
+            "version": "2.2.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sleiman/airtable-php.git",
+                "reference": "0cdb5a12b41198df34a34eb57424d3f349e4f702"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sleiman/airtable-php/zipball/0cdb5a12b41198df34a34eb57424d3f349e4f702",
+                "reference": "0cdb5a12b41198df34a34eb57424d3f349e4f702",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "TANIOS\\Airtable\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A PHP wrapper for the Airtable API Edit",
+            "time": "2017-08-21T12:39:28+00:00"
         },
         {
             "name": "symfony/console",
