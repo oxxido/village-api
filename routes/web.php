@@ -11,11 +11,14 @@
 |
 */
 
+//$router->group(['middleware'=>'auth'], function () use ($router) {
 $router->group([], function () use ($router) {
     $router->get('/', ['uses' => 'Controller@index']);
     $router->get('/people', ['uses' => 'Controller@people']);
     $router->get('/organizations', ['uses' => 'Controller@organizations']);
     $router->get('/plans', ['uses' => 'Controller@plans']);
+    $router->get('/admins', ['uses' => 'Controller@admins']);
+    $router->get('/admin', ['uses' => 'Controller@admin']);
     /*$router->get('user/profile', function () {
         // Uses Auth Middleware
     });*/

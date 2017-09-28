@@ -11,10 +11,11 @@ class Controller extends BaseController
     private $airtable;
 
     function __construct() {
-        $this->airtable = new Airtable(array(
+        $this->airtable = new Airtable([
             'api_key'=> env('API_KEY'),
             'base'   => env('BASE_KEY')
-        ));
+        ]);
+        //$this->airtable = $airtable;
     }
 
     /**
@@ -24,14 +25,37 @@ class Controller extends BaseController
      * @return array rows of current table
      */
     private function getTable($tableName) {
-        $rows = [];
-        $request = $this->airtable->getContent( $tableName );
+        /*$rows = [];
+        $request = $this->airtable->getContent($tableName);
         do {
             $response = $request->getResponse();
-            $rows[] = $response[ 'records' ] ;
+            $rows[] = $response['records'] ;
         }
-        while( $request = $response->next() );
-        return $rows;
+        while ($request = $response->next());
+        return $rows;*/
+
+        $response = $this->airtable->getContent($tableName)->getResponse();
+        return $response['records'];
+    }
+
+    private function getRecordById($tableName, $tableId)
+    {
+        $response = $this->airtable->getContent($tableName.'/'.$tableId)->getResponse();
+        return $response['id']?['id' => $response['id'], 'fields'=>$response['fields']]:false;
+    }
+
+    private function getRecordByFilter($tableName, $params)
+    {
+        $response = $this->airtable->getContent($tableName, $params)->getResponse();
+        return $response['records'];
+    }
+
+    private function getLoginInfo($username, $password)
+    {
+        $params =  array(
+            "filterByFormula"=>"AND({User} = '".$username."', {Password} = '".$password."')"
+        );
+        return $this->getRecordByFilter('Admins', $params);
     }
 
      /**
@@ -52,7 +76,8 @@ class Controller extends BaseController
      */
     public function people()
     {
-        return response()->json($this->getTable('People'));
+        //return response()->json($this->getTable('People'));
+        return $this->response($this->getTable('People'));
     }
 
     /**
@@ -73,6 +98,30 @@ class Controller extends BaseController
     public function plans()
     {
         return response()->json($this->getTable('Plans'));
+    }
+
+    /**
+     * Get the admin table from airtable
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function admins()
+    {
+        echo "hola";
+        return response()->json($this->getLoginInfo('Ger', 'holapolola'));
+        //recDIqYTHo1RHrrxr
+        //return response()->json($this->getRecordByid('Ger', 'recDIqYTHo1RHrrxr'));
+    }
+    public function admin()
+    {
+        return response()->json($this->getRecordByid('Ger', 'recDIqYTHo1RHrrxr'));
+    }
+
+    private function response($data)
+    {
+        $response = [];
+        $response['data'] = $data;
+        return response()->json($response);
     }
 
 }
