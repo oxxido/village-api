@@ -9,7 +9,8 @@
         "laravel/lumen-framework": "5.5.*",
         "vlucas/phpdotenv": "~2.2",
         "sleiman/airtable-php": "^2.2",
-        "barryvdh/laravel-cors": "^0.9.3"
+        "barryvdh/laravel-cors": "^0.9.3",
+        "spatie/laravel-fractal": "^5.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
