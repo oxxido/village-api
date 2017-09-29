@@ -65,8 +65,9 @@ class Controller extends BaseController
      */
     public function index()
     {
-        //
-        return response()->json(['hello'=>'world']);
+        //$person = Person::fractalFirst();
+        //return response($person->toJson());
+        return response()->json(['hello' => 'world']);
     }
 
     /**
@@ -123,5 +124,4 @@ class Controller extends BaseController
         $response['data'] = $data;
         return response()->json($response);
     }
-
 }
