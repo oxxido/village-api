@@ -16,6 +16,7 @@ $router->group([], function () use ($router) {
     $router->get('/', ['uses' => 'Controller@index']);
     $router->get('/people', ['uses' => 'Controller@people']);
     $router->get('/organizations', ['uses' => 'Controller@organizations']);
+    $router->get('/checkins', ['uses' => 'Controller@checkins']);
     $router->get('/plans', ['uses' => 'Controller@plans']);
     $router->get('/admins', ['uses' => 'Controller@admins']);
     $router->get('/admin', ['uses' => 'Controller@admin']);

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 use \TANIOS\Airtable\Airtable;
+use App\Airtable\Models\Person;
+use App\Airtable\Models\Organization;
+use App\Airtable\Models\Checkins;
 
 class Controller extends BaseController
 {
@@ -65,9 +68,9 @@ class Controller extends BaseController
      */
     public function index()
     {
-        //$person = Person::fractalFirst();
-        //return response($person->toJson());
-        return response()->json(['hello' => 'world']);
+        //$person = Person::fractalGet(20);
+        //return response()->json($person->toArray());
+        return response()->json(['Status' => '200']);
     }
 
     /**
@@ -77,8 +80,8 @@ class Controller extends BaseController
      */
     public function people()
     {
-        //return response()->json($this->getTable('People'));
-        return $this->response($this->getTable('People'));
+        $person = Person::fractalGet(20);
+        return response()->json($person->toArray());
     }
 
     /**
@@ -88,7 +91,20 @@ class Controller extends BaseController
      */
     public function organizations()
     {
-        return response()->json($this->getTable('Organizations'));
+        $Organizations = Organization::fractalGet(20);
+        return response()->json($Organizations->toArray());
+        //return response()->json($this->getTable('Organizations'));
+    }
+
+    /**
+     * Get the checkins table from airtable
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function checkins()
+    {
+        $Checkins = Checkins::fractalGet(20);
+        return response()->json($Checkins->toArray());
     }
 
     /**
