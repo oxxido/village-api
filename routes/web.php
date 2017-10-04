@@ -12,14 +12,16 @@
 */
 
 //$router->group(['middleware'=>'auth'], function () use ($router) {
-$router->group([], function () use ($router) {
+$offset = '[/{offset:[A-Za-z0-9\/]+}]';
+$router->group([], function () use ($router, $offset) {
     $router->get('/', ['uses' => 'Controller@index']);
-    $router->get('/people', ['uses' => 'Controller@people']);
-    $router->get('/organizations', ['uses' => 'Controller@organizations']);
-    $router->get('/checkins', ['uses' => 'Controller@checkins']);
-    $router->get('/plans', ['uses' => 'Controller@plans']);
-    $router->get('/admins', ['uses' => 'Controller@admins']);
-    $router->get('/admin', ['uses' => 'Controller@admin']);
+    $router->get('/people' .        $offset, ['uses' => 'Controller@people']);
+    $router->get('/organizations' . $offset, ['uses' => 'Controller@organizations']);
+    $router->get('/checkins' .      $offset, ['uses' => 'Controller@checkins']);
+    $router->get('/plans' .         $offset, ['uses' => 'Controller@plans']);
+
+    $router->get('/admins' .        $offset, ['uses' => 'Controller@admins']);
+    $router->get('/admin' .         $offset, ['uses' => 'Controller@admin']);
     /*$router->get('user/profile', function () {
         // Uses Auth Middleware
     });*/

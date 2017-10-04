@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use \TANIOS\Airtable\Airtable;
 use App\Airtable\Models\Person;
@@ -78,9 +79,10 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function people()
+    public function people($offset = null)
     {
-        $person = Person::fractalGet(20);
+        //$offset = $request->get('offset')?$request->get('offset'):null;
+        $person = Person::fractalGet(20, $offset);
         return response()->json($person->toArray());
     }
 
@@ -89,9 +91,9 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function organizations()
+    public function organizations($offset = null)
     {
-        $Organizations = Organization::fractalGet(20);
+        $Organizations = Organization::fractalGet(20, $offset);
         return response()->json($Organizations->toArray());
         //return response()->json($this->getTable('Organizations'));
     }
@@ -101,9 +103,9 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function checkins()
+    public function checkins($offset = null)
     {
-        $Checkins = Checkins::fractalGet(20);
+        $Checkins = Checkins::fractalGet(20, $offset);
         return response()->json($Checkins->toArray());
     }
 
@@ -131,6 +133,11 @@ class Controller extends BaseController
     }
     public function admin()
     {
+        return response()->json($this->getRecordByid('Ger', 'recDIqYTHo1RHrrxr'));
+    }
+    public function getPages($table)
+    {
+        $Checkins = Checkins::fractalGet(20);
         return response()->json($this->getRecordByid('Ger', 'recDIqYTHo1RHrrxr'));
     }
 

@@ -8,8 +8,8 @@ class CheckinsTransformer extends AbstractTransformer
 {
     const ORIGINAL_ATTRIBUTES = [
         'id'            => 'id',
-        'customer'  => 'fields->Customer',
-        'space'  => 'fields->Space',
+        'customer'  => 'fields->CustomerName',
+        'space'  => 'fields->SpaceName',
         'type'      => 'fields->Type',
         'checkin'=> 'fields->Check-in',
         'timestamp'          => 'fields->Timestamp',
