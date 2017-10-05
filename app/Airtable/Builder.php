@@ -96,17 +96,16 @@ class Builder
     protected function params()
     {
         $params = [
-            'pageSize' => $this->pageSize,
-            'sort'     => $this->sort ? json_encode($this->sort) : null,
-            'fields'   => $this->fields ? json_encode($this->fields) : null,
-            'filters'  => $this->filterByFormula ?? null,
-            'offset'   => $this->offset ?? null,
+            'pageSize'        => $this->pageSize,
+            'sort'            => $this->sort ? json_encode($this->sort) : null,
+            'fields'          => $this->fields ? json_encode($this->fields) : null,
+            'filterByFormula' => $this->filterByFormula ?? null,
+            'offset'          => $this->offset ?? null,
         ];
 
-        return array_filter($params,
-            function ($param) {
-                return $param !== null;
-            });
+        return array_filter($params, function ($param) {
+            return $param !== null;
+        });
     }
 
     protected function fetch()
