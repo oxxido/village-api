@@ -7,15 +7,15 @@ use App\Airtable\Models\Model;
 class CheckinsTransformer extends AbstractTransformer
 {
     const ORIGINAL_ATTRIBUTES = [
-        'id'            => 'id',
+        'id'        => 'id',
         'customer'  => 'fields->CustomerName',
-        'space'  => 'fields->SpaceName',
+        'space'     => 'fields->SpaceName',
         'type'      => 'fields->Type',
-        'checkin'=> 'fields->Check-in',
-        'timestamp'          => 'fields->Timestamp',
-        'lastSeen'=> 'fields->Last seen',
-        'month'       => 'fields->Month',
-        'date'       => 'fields->Date',
+        'checkin'   => 'fields->Check-in',
+        'timestamp' => 'fields->Timestamp',
+        'lastSeen'  => 'fields->Last seen',
+        'month'     => 'fields->Month',
+        'date'      => 'fields->Date',
     ];
 
     public function transform(Model $resource)

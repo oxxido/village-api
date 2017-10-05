@@ -8,6 +8,7 @@ use \TANIOS\Airtable\Airtable;
 use App\Airtable\Models\Person;
 use App\Airtable\Models\Organization;
 use App\Airtable\Models\Checkins;
+use App\Airtable\Models\Spaces;
 
 class Controller extends BaseController
 {
@@ -107,6 +108,28 @@ class Controller extends BaseController
     {
         $Checkins = Checkins::fractalGet(20, $offset);
         return response()->json($Checkins->toArray());
+    }
+
+    /**
+     * Get the checkins table from airtable
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function spaces($offset = null)
+    {
+        $Spaces = Spaces::fractalGet(20, $offset);
+        return response()->json($Spaces->toArray());
+    }
+
+    /**
+     * Get the checkins table from airtable
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function space($id)
+    {
+        $Space = Spaces::fractalGet(20, $id);
+        return response()->json($Space->toArray());
     }
 
     /**
