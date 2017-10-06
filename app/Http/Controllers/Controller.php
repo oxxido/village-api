@@ -72,6 +72,10 @@ class Controller extends BaseController
     {
         //$person = Person::fractalGet(20);
         //return response()->json($person->toArray());
+        //$check_ins = Checkins::get(20);
+        $check_ins = Checkins::getUniqueBySpaceId('pZ0q70cQqK8HxJAnusL9');
+        $check_ins = Checkins::find('rec5PhcaV5E5n6kPx');
+        return response()->json($check_ins->transform());
         return response()->json(['Status' => '200']);
     }
 
