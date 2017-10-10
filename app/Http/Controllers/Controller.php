@@ -9,6 +9,8 @@ use App\Airtable\Models\Person;
 use App\Airtable\Models\Organization;
 use App\Airtable\Models\Checkins;
 use App\Airtable\Models\Spaces;
+use Illuminate\Support\Facades\Crypt;
+
 
 class Controller extends BaseController
 {
@@ -55,12 +57,20 @@ class Controller extends BaseController
         return $response['records'];
     }
 
-    private function getLoginInfo($username, $password)
+    private function getSpaceInfo($space)
     {
         $params =  array(
-            "filterByFormula"=>"AND({User} = '".$username."', {Password} = '".$password."')"
+            "filterByFormula"=>"AND({Space Hash} = '".$space."')"
         );
-        return $this->getRecordByFilter('Admins', $params);
+        return $this->getRecordByFilter('Spaces', $params);
+    }
+
+    private function getLoginInfo($space, $password)
+    {
+        $params =  array(
+            "filterByFormula"=>"AND({Space Hash} = '".$space."', {Password} = '".$password."')"
+        );
+        return $this->getRecordByFilter('Spaces', $params);
     }
 
      /**
@@ -74,9 +84,9 @@ class Controller extends BaseController
         //return response()->json($person->toArray());
         //$check_ins = Checkins::get(20);
         $check_ins = Checkins::getUniqueBySpaceId('pZ0q70cQqK8HxJAnusL9');
-        $check_ins = Checkins::find('rec5PhcaV5E5n6kPx');
+        //$check_ins = Checkins::find('rec5PhcaV5E5n6kPx');
         return response()->json($check_ins->transform());
-        return response()->json(['Status' => '200']);
+        //return response()->json(['Status' => '200']);
     }
 
     /**
@@ -84,11 +94,14 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function people($offset = null)
+    public function people($offset = null, Request $request)
     {
+        //$t = [ $request->get('id'), $request->get('name')];
+        //return response()->json($t);
         //$offset = $request->get('offset')?$request->get('offset'):null;
         $person = Person::fractalGet(20, $offset);
         return response()->json($person->toArray());
+
     }
 
     /**
@@ -153,8 +166,9 @@ class Controller extends BaseController
      */
     public function admins()
     {
-        echo "hola";
-        return response()->json($this->getLoginInfo('Ger', 'holapolola'));
+        return response()->json($this->getTable('Admins'));
+        //echo "hola";
+        //return response()->json($this->getLoginInfo('Ger', 'holapolola'));
         //recDIqYTHo1RHrrxr
         //return response()->json($this->getRecordByid('Ger', 'recDIqYTHo1RHrrxr'));
     }
@@ -162,6 +176,36 @@ class Controller extends BaseController
     {
         return response()->json($this->getRecordByid('Ger', 'recDIqYTHo1RHrrxr'));
     }
+
+    public function login(Request $request)
+    {
+        $response = [ 'loggedin' => false ];
+
+        $loginInfo = $this->getLoginInfo(
+                        $request->input('space'),
+                        $request->input('pass')
+                        );
+        if ($loginInfo) {
+            $response['loggedin'] = true;
+            //encode data:
+            $toEnctrypt = "{$loginInfo[0]->id}|{$loginInfo[0]->fields->Name}|".str_random(15);
+            $response['payload'] = [ 
+                'hash' => Crypt::encrypt($toEnctrypt),
+                'name' => $loginInfo[0]->fields->Name
+            ];
+        } else {
+            $spaceInfo = $this->getSpaceInfo(
+                        $request->input('space')
+                        );
+            if ($spaceInfo) {
+                $response['reason'] = 'Password is incorrect';
+            } else {
+                $response['reason'] = 'Space not found';
+            }
+        }
+        return response()->json( $response );
+    }
+
     public function getPages($table)
     {
         $Checkins = Checkins::fractalGet(20);

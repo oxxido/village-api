@@ -14,7 +14,7 @@
 //$router->group(['middleware'=>'auth'], function () use ($router) {
 $offsetRegex = '[/{offset:[A-Za-z0-9\/]+}]';
 $idRegex = '[/{id:[A-Za-z0-9\/]+}]';
-$router->group([], function () use ($router, $offsetRegex, $idRegex) {
+$router->group(['middleware'=>'auth'], function () use ($router, $offsetRegex, $idRegex) {
     $router->get('/', ['uses' => 'Controller@index']);
     $router->get('/people' .        $offsetRegex, ['uses' => 'Controller@people']);
     $router->get('/organizations' . $offsetRegex, ['uses' => 'Controller@organizations']);
@@ -29,3 +29,5 @@ $router->group([], function () use ($router, $offsetRegex, $idRegex) {
         // Uses Auth Middleware
     });*/
 });
+
+$router->post('/login', ['uses' => 'Controller@login']);
