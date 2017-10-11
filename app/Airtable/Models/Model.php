@@ -4,7 +4,7 @@ namespace App\Airtable\Models;
 
 use stdClass;
 use App\Airtable\Builder;
-use Illuminate\Support\Collection;
+use App\Airtable\Collection;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Support\Arrayable;
 
@@ -14,6 +14,7 @@ abstract class Model implements Arrayable, Jsonable
     protected static $transformer;
     protected $query;
     protected $attributes;
+    public $exists = false;
 
     public static function query()
     {
@@ -26,8 +27,7 @@ abstract class Model implements Arrayable, Jsonable
 
         return new Collection(array_map(function ($record) {
             return new static($record);
-        },
-            $query->get($page_size)));
+        }, $query->get($page_size)));
     }
 
     public static function all()
@@ -45,6 +45,11 @@ abstract class Model implements Arrayable, Jsonable
     public static function transformer()
     {
         return new static::$transformer();
+    }
+
+    public static function transformerClass()
+    {
+        return static::$transformer;
     }
 
     public static function fractalGet($page_size = Builder::PAGE_SIZE, $offset = null)
@@ -105,9 +110,18 @@ abstract class Model implements Arrayable, Jsonable
         return $this;
     }
 
-    public function getQuery()
+    public function getQuery($force_new = false)
     {
-        return $this->query;
+        if (!$this->query) {
+            return $this->query = new Builder(static::$table);
+        }
+
+        return $this->query = !$force_new ? $this->query : new Builder(static::$table);
+    }
+
+    public function getTable()
+    {
+        return static::$table;
     }
 
     public function toArray()
@@ -149,5 +163,53 @@ abstract class Model implements Arrayable, Jsonable
         $this->attributes->$key = $value;
 
         return $this;
+    }
+
+    public static function collect(array $raw, $offset = null)
+    {
+        $collection = new Collection(array_map(function ($record) {
+            return new static($record);
+        }, $raw));
+
+        $collection->setModelClass(static::class);
+        $collection->setOffset($offset);
+
+        return $collection;
+    }
+
+    public function newInstance($attributes = [], $exists = false)
+    {
+        // This method just provides a convenient way for us to generate fresh model
+        // instances of this current model. It is particularly useful during the
+        // hydration of new objects via the Eloquent query builder instances.
+        $model = new static((object) $attributes);
+
+        $model->exists = $exists;
+
+        return $model;
+    }
+
+    public function newModelInstance($attributes = [])
+    {
+        return $this->newInstance($attributes);
+    }
+
+    public function create(array $attributes = [])
+    {
+        return tap($this->newModelInstance($attributes), function ($instance) {
+            $instance->save();
+        });
+    }
+
+    public function make(array $attributes)
+    {
+        return $this->newModelInstance($attributes);
+    }
+
+    public function transform()
+    {
+        $fractal = fractal($this, static::transformer());
+
+        return $fractal->toArray();
     }
 }

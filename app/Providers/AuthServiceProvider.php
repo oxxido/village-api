@@ -2,16 +2,14 @@
 
 namespace App\Providers;
 
-// use App\User;
-//use \TANIOS\Airtable\Airtable;
-//use app\providers\AirtableServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\GenericUser;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    private $Airtable;
     /**
      * Register any application services.
      *
@@ -21,22 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         //
     }
-    /**
-     * Airtable plugin to get a record
-     *
-     * @return void
-     */
-    private function getRecordById($tableName, $tableId)
-    {
-        /*$airtable = new Airtable([
-            'api_key'=> env('API_KEY'),
-            'base'   => env('BASE_KEY')
-        ]);
-        $response = $airtable->getContent($tableName.'/'.$tableId)->getResponse();*/
-        $response = $this->Airtable->getContent($tableName.'/'.$tableId)->getResponse();
-        //dd($response->id);
-        return $response->id?new GenericUser(['id' =>$response->id, 'name' =>$response->fields->User]):null;
-    }
+
     /**
      * Boot the authentication services for the application.
      *
@@ -45,20 +28,32 @@ class AuthServiceProvider extends ServiceProvider
     // public function boot(Airtable $Airtable)
     public function boot()
     {
-        //$this->Airtable = $Airtable;
         // Here you may define how you wish users to be authenticated for your Lumen
         // application. The callback which receives the incoming request instance
         // should return either a User instance or null. You're free to obtain
         // the User instance via an API token or any other method necessary.
 
         $this->app['auth']->viaRequest('api', function ($request) {
-            return new GenericUser(['id' =>1, 'name' => 'ger']);
-            //dd($request->headers->all() );
-            if ($request->header('api-token')) {
+
+            if ($authHeader = $request->header('Authorization')) {
                 //return User::where('api_token', $request->input('api_token'))->first();
-                return $this->getRecordById('Admins', $request->header('api-token'));
-            } else {
-                die("no token");
+                // check parsing header:
+                $authHeader = str_replace("Bearer ", "", $authHeader);
+                try {
+                    $authInfo = Crypt::decrypt($authHeader);
+                    if ($authInfo) {
+                        list($spaceId, $spaceName, $gc) = explode('|', $authInfo);
+                        if ($spaceId) {
+                            $spaceInfo = ['id' => $spaceId, 'name' => $spaceName];
+                            $request->attributes->add($spaceInfo);
+                            return new GenericUser($spaceInfo);
+                        } else {
+                            return null;
+                        }
+                    }
+                } catch (DecryptException $e) {
+                    return null;
+                }
             }
         });
     }

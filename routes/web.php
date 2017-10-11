@@ -12,14 +12,22 @@
 */
 
 //$router->group(['middleware'=>'auth'], function () use ($router) {
-$router->group([], function () use ($router) {
+$offsetRegex = '[/{offset:[A-Za-z0-9\/]+}]';
+$idRegex = '[/{id:[A-Za-z0-9\/]+}]';
+$router->group(['middleware'=>'auth'], function () use ($router, $offsetRegex, $idRegex) {
     $router->get('/', ['uses' => 'Controller@index']);
-    $router->get('/people', ['uses' => 'Controller@people']);
-    $router->get('/organizations', ['uses' => 'Controller@organizations']);
-    $router->get('/plans', ['uses' => 'Controller@plans']);
-    $router->get('/admins', ['uses' => 'Controller@admins']);
-    $router->get('/admin', ['uses' => 'Controller@admin']);
+    $router->get('/people' .        $offsetRegex, ['uses' => 'Controller@people']);
+    $router->get('/organizations' . $offsetRegex, ['uses' => 'Controller@organizations']);
+    $router->get('/checkins' .      $offsetRegex, ['uses' => 'Controller@checkins']);
+    $router->get('/plans' .         $offsetRegex, ['uses' => 'Controller@plans']);
+    $router->get('/spaces' .        $offsetRegex, ['uses' => 'Controller@spaces']);
+    $router->get('/space' .       $idRegex, ['uses' => 'Controller@space']);
+
+    $router->get('/admins' .        $offsetRegex, ['uses' => 'Controller@admins']);
+    $router->get('/admin' .         $offsetRegex, ['uses' => 'Controller@admin']);
     /*$router->get('user/profile', function () {
         // Uses Auth Middleware
     });*/
 });
+
+$router->post('/login', ['uses' => 'Controller@login']);
