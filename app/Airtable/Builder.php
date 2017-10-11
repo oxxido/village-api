@@ -58,6 +58,13 @@ class Builder
         return $this;
     }
 
+    public function view($view)
+    {
+        $this->view = $view;
+
+        return $this;
+    }
+
     public function sortBy($field, $direction = 'asc')
     {
         array_push($this->sort, ['field' => $field, 'direction' => $direction]);
@@ -101,6 +108,7 @@ class Builder
             'fields'          => $this->fields ? json_encode($this->fields) : null,
             'filterByFormula' => $this->filterByFormula ?? null,
             'offset'          => $this->offset ?? null,
+            'view'            => $this->view ?? null,
         ];
 
         return array_filter($params, function ($param) {

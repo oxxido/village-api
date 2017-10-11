@@ -11,7 +11,7 @@ use App\Airtable\Models\Organization;
 use App\Airtable\Models\CheckIn;
 use App\Airtable\Models\Space;
 use Illuminate\Support\Facades\Crypt;
-
+use Log;
 
 class Controller extends BaseController
 {
@@ -105,8 +105,18 @@ class Controller extends BaseController
         //$t = [ $request->get('id'), $request->get('name')];
         //return response()->json($t);
         //$offset = $request->get('offset')?$request->get('offset'):null;
-        $person = Person::fractalGet(20, $offset);
-        return response()->json($person->toArray());
+
+        // $person = Person::fractalGet(20, $offset);
+        $people = CheckIn::getUniqueUserBySpaceName($request->get('name'), 20)->transform();
+        $peopleArray = $people->toArray();
+        $uniqueArray = $temp = [];
+        foreach ($peopleArray['data'] as $person) {
+            if(!isset($temp[$person['customer']])) {
+                $uniqueArray[] = $person;
+                $temp[$person['customer']] = true;
+            }
+        }
+        return response()->json(['data' => $uniqueArray]);
 
     }
 
@@ -127,9 +137,12 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function checkins($offset = null)
+    public function checkins($offset = null, Request $request)
     {
-        $Checkins = CheckIn::fractalGet(20, $offset);
+        //$Checkins = CheckIn::fractalGet(20, $offset);
+        Log::info('space id: '.$request->get('id'));
+        $Checkins = CheckIn::getBySpaceName($request->get('name'), 20)->transform();
+        //$Checkins = CheckIn::getUniqueBySpaceId('recxNbj8oGnzIioEj')->transform();
         return response()->json($Checkins->toArray());
     }
 
