@@ -140,7 +140,7 @@ class Controller extends BaseController
     public function checkins($offset = null, Request $request)
     {
         //$Checkins = CheckIn::fractalGet(20, $offset);
-        Log::info('space id: '.$request->get('id'));
+        //Log::info('space id: '.$request->get('id'));
         $Checkins = CheckIn::getBySpaceName($request->get('name'), 20)->transform();
         //$Checkins = CheckIn::getUniqueBySpaceId('recxNbj8oGnzIioEj')->transform();
         return response()->json($Checkins->toArray());
@@ -162,10 +162,11 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function space($id)
+    public function space(Request $request)
     {
-        $Space = Space::fractalGet(20, $id);
-        return response()->json($Space->toArray());
+        // $Space = Space::fractalGet(20, $id);
+        $Space = Space::getBySpaceName($request->get('name'))->transform();
+        return response()->json($Space);
     }
 
     /**

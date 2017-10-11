@@ -21,7 +21,7 @@ $router->group(['middleware'=>'auth'], function () use ($router, $offsetRegex, $
     $router->get('/checkins' .      $offsetRegex, ['uses' => 'Controller@checkins']);
     $router->get('/plans' .         $offsetRegex, ['uses' => 'Controller@plans']);
     $router->get('/spaces' .        $offsetRegex, ['uses' => 'Controller@spaces']);
-    $router->get('/space' .       $idRegex, ['uses' => 'Controller@space']);
+    $router->get('/space',                        ['uses' => 'Controller@space']);
 
     $router->get('/admins' .        $offsetRegex, ['uses' => 'Controller@admins']);
     $router->get('/admin' .         $offsetRegex, ['uses' => 'Controller@admin']);

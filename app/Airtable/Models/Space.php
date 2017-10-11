@@ -14,4 +14,15 @@ class Space extends Model
     {
         return CheckIn::getUniqueBySpaceId($this->id, $page_size);
     }
+
+    public static function getBySpaceName($space_name)
+    {
+        $query = static::query();
+        $query->where("{Name} = '{$space_name}'");
+        $obj   = new static($query->first());
+        //$offset = $query->getOffset();
+
+        //return static::collect($page, $offset);
+        return $obj;
+    }
 }
