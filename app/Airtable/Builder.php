@@ -124,4 +124,11 @@ class Builder
     {
         return $this->request;
     }
+
+    public function post($fields, $table = null)
+    {
+        $table = $table?? $this->table;
+
+        return $this->airtable->saveContent($table, $fields);
+    }
 }

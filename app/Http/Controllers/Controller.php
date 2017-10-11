@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use \TANIOS\Airtable\Airtable;
 use App\Airtable\Models\Person;
 use App\Airtable\Models\Organization;
-use App\Airtable\Models\Checkins;
-use App\Airtable\Models\Spaces;
+use App\Airtable\Models\CheckIn;
+use App\Airtable\Models\Space;
 use Illuminate\Support\Facades\Crypt;
 
 
@@ -82,10 +83,15 @@ class Controller extends BaseController
     {
         //$person = Person::fractalGet(20);
         //return response()->json($person->toArray());
-        //$check_ins = Checkins::get(20);
-        $check_ins = Checkins::getUniqueBySpaceId('pZ0q70cQqK8HxJAnusL9');
+        //return response()->json(Spaces::first());
+        $person = Person::first();
+        $check_in = $person->insertCheckIn('rec1LSI8mfytkpOm2', '2017-10-10T00:00:00.000Z');
+        //$check_in = $person->insertCheckIn('asd', '2017-10-10T00:00:00.000Z'); // Throws exception
+        //return response()->json($check_in); // Also works
+        return response()->json($check_in->transform());
+
+        //$check_ins = Checkins::getUniqueBySpaceId('pZ0q70cQqK8HxJAnusL9');
         //$check_ins = Checkins::find('rec5PhcaV5E5n6kPx');
-        return response()->json($check_ins->transform());
         //return response()->json(['Status' => '200']);
     }
 
@@ -123,7 +129,7 @@ class Controller extends BaseController
      */
     public function checkins($offset = null)
     {
-        $Checkins = Checkins::fractalGet(20, $offset);
+        $Checkins = CheckIn::fractalGet(20, $offset);
         return response()->json($Checkins->toArray());
     }
 
@@ -134,7 +140,7 @@ class Controller extends BaseController
      */
     public function spaces($offset = null)
     {
-        $Spaces = Spaces::fractalGet(20, $offset);
+        $Spaces = Space::fractalGet(20, $offset);
         return response()->json($Spaces->toArray());
     }
 
@@ -145,7 +151,7 @@ class Controller extends BaseController
      */
     public function space($id)
     {
-        $Space = Spaces::fractalGet(20, $id);
+        $Space = Space::fractalGet(20, $id);
         return response()->json($Space->toArray());
     }
 
@@ -189,7 +195,7 @@ class Controller extends BaseController
             $response['loggedin'] = true;
             //encode data:
             $toEnctrypt = "{$loginInfo[0]->id}|{$loginInfo[0]->fields->Name}|".str_random(15);
-            $response['payload'] = [ 
+            $response['payload'] = [
                 'hash' => Crypt::encrypt($toEnctrypt),
                 'name' => $loginInfo[0]->fields->Name
             ];
@@ -208,7 +214,7 @@ class Controller extends BaseController
 
     public function getPages($table)
     {
-        $Checkins = Checkins::fractalGet(20);
+        $Checkins = CheckIn::fractalGet(20);
         return response()->json($this->getRecordByid('Ger', 'recDIqYTHo1RHrrxr'));
     }
 
