@@ -14,6 +14,7 @@ abstract class Model implements Arrayable, Jsonable
     protected static $transformer;
     protected $query;
     protected $attributes;
+    public $exists = false;
 
     public static function query()
     {
@@ -174,5 +175,41 @@ abstract class Model implements Arrayable, Jsonable
         $collection->setOffset($offset);
 
         return $collection;
+    }
+
+    public function newInstance($attributes = [], $exists = false)
+    {
+        // This method just provides a convenient way for us to generate fresh model
+        // instances of this current model. It is particularly useful during the
+        // hydration of new objects via the Eloquent query builder instances.
+        $model = new static((object) $attributes);
+
+        $model->exists = $exists;
+
+        return $model;
+    }
+
+    public function newModelInstance($attributes = [])
+    {
+        return $this->newInstance($attributes);
+    }
+
+    public function create(array $attributes = [])
+    {
+        return tap($this->newModelInstance($attributes), function ($instance) {
+            $instance->save();
+        });
+    }
+
+    public function make(array $attributes)
+    {
+        return $this->newModelInstance($attributes);
+    }
+
+    public function transform()
+    {
+        $fractal = fractal($this, static::transformer());
+
+        return $fractal->toArray();
     }
 }

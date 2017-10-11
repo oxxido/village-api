@@ -5,7 +5,7 @@ namespace App\Airtable\Models;
 use App\Airtable\Builder;
 use App\Transformers\CheckinsTransformer;
 
-class Checkins extends Model
+class CheckIn extends Model
 {
     protected static $table = 'check-ins';
     protected static $transformer = CheckinsTransformer::class;
