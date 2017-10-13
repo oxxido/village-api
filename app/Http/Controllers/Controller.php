@@ -110,11 +110,22 @@ class Controller extends BaseController
         $people = CheckIn::getUniqueUserBySpaceName($request->get('name'), 20)->transform();
         $peopleArray = $people->toArray();
         $uniqueArray = $temp = [];
-        foreach ($peopleArray['data'] as $person) {
-            if(!isset($temp[$person['customer']])) {
+        /*foreach ($peopleArray['data'] as $person) {
+            if(!isset($temp[$person['name']])) {
                 $uniqueArray[] = $person;
-                $temp[$person['customer']] = true;
+                $temp[$person['name']] = true;
             }
+        }*/
+        foreach ($peopleArray['data'] as $person) {
+            if(isset($temp[$person['name']])) {
+                $temp[$person['name']]['count']++;
+            } else {
+                $temp[$person['name']] = $person;
+                $temp[$person['name']]['count'] = 1;
+            }
+        }
+        foreach ($temp as $person) {
+            $uniqueArray[] = $person;
         }
         return response()->json(['data' => $uniqueArray]);
 

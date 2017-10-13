@@ -12,10 +12,10 @@ class SpacesTransformer extends AbstractTransformer
         'name'       => 'fields->Name',
         'address'    => 'fields->Address',
         'accountant' => 'fields->Key Acount Coworking Spaces->name',
+        'accountantEmail' => 'fields->Key Acount Coworking Spaces->email',
         'publicEmail'=> 'fields->Public Email',
         'publicPhone'=> 'fields->Public Phone',
         'address'    => 'fields->Address',
-
     ];
 
     public function transform(Model $resource)

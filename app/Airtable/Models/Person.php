@@ -29,4 +29,11 @@ class Person extends Model
 
         return new CheckIn($decoded);
     }
+    public static function getByPersonId($person_id)
+    {
+        $query = static::query();
+        $query->where("{id} = '{$person_id}'");
+        $obj   = new static($query->first());
+        return $obj;
+    }
 }
