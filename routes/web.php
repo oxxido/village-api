@@ -28,7 +28,8 @@ $router->group(['middleware'=>'auth'], function () use ($router, $offsetRegex, $
     $router->get('/admin' .         $offsetRegex, ['uses' => 'Controller@admin']);
 
     $router->get('/person' .        $idRegex, ['uses' => 'Controller@person']);
-    $router->get('/personcheckins'.$idRegex, ['uses' => 'Controller@personCheckins']);
+    // $router->get('/personcheckins'.$idRegex, ['uses' => 'Controller@personCheckins']);
+    $router->get('/personcheckins/{name}', ['uses' => 'Controller@personCheckins']);
     /*$router->get('user/profile', function () {
         // Uses Auth Middleware
     });*/

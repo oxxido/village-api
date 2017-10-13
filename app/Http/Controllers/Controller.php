@@ -157,9 +157,9 @@ class Controller extends BaseController
         return response()->json($Checkins->toArray());
     }
 
-    public function personCheckins(Request $request, $id_person)
+    public function personCheckins(Request $request, $name)
     {
-        $Checkins = CheckIn::getByUserId($request->get('name'), $id_person, 20)->transform();
+        $Checkins = CheckIn::getByUserId($request->get('name'), $name, 20)->transform();
         //$Checkins = CheckIn::getUniqueBySpaceId('recxNbj8oGnzIioEj')->transform();
         return response()->json($Checkins->toArray());
     }
@@ -201,7 +201,7 @@ class Controller extends BaseController
                 'type'         => 'Participant',
                 'program'      => 'Coworking experience',
                 'zipOffice'    => '6060',
-                'name'         => 'First LastName',
+                'name'         => 'Moritz Gartenmeister (VO)',
                 'orgAbbr'      => 'GHS',
                 'created'      => 'createdTime'
             ]
