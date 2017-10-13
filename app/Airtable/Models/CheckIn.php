@@ -31,16 +31,12 @@ class CheckIn extends Model
         return static::collect($page, $offset);
     }
 
-    public static function getByUserId($space_name, $user_name, $page_size = Builder::PAGE_SIZE)
+    public static function getByUserId($space_name, $user_id, $page_size = Builder::PAGE_SIZE)
     {
         $query = static::query();
-        //$searchQuery = "AND({CustomerName} = '{$user_name}', {Space} = '{$space_name}')";
-        $searchQuery = "{CustomerName} = 'Moritz%20Gartenmeister%20(VO)'";
-        //$searchQuery = "{Space} = '{$space_name}'";
-        //$searchQuery = "AND({CustomerName} = 'Moritz%20Gartenmeister%20(VO)', {Space} = 'Effinger Coworking Space')";
-        $query->where($searchQuery);
-        // $query->where("{Customer} = '{$user_id}'");
-        //die($searchQuery);
+
+        $query->where("AND({CustomerId} = '{$user_id}', {Space} = '{$space_name}')");
+
         $page   = $query->get($page_size);
         $offset = $query->getOffset();
 

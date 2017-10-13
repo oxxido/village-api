@@ -189,25 +189,8 @@ class Controller extends BaseController
 
     public function person(Request $request, $id_person)
     {
-        return response()->json([
-            'data' => [
-                'id'           =>  $id_person,
-                'firstName'    => 'First',
-                'lastName'     => 'LastName',
-                'email'        => 'some@email.com',
-                'phone'        => '(321) 654 6548',
-                'customerTeam' => 'myteam',
-                'organization' => 'Gustherhaner',
-                'type'         => 'Participant',
-                'program'      => 'Coworking experience',
-                'zipOffice'    => '6060',
-                'name'         => 'Moritz Gartenmeister (VO)',
-                'orgAbbr'      => 'GHS',
-                'created'      => 'createdTime'
-            ]
-        ]);
-        //$Space = Person::getByPersonId($id_person)->transform();
-        //return response()->json($Space);
+        $Person = Person::getByPersonId($id_person)->transform();
+        return response()->json($Person);
     }
 
     /**
