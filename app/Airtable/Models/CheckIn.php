@@ -30,4 +30,14 @@ class CheckIn extends Model
 
         return static::collect($page, $offset);
     }
+
+    public static function getByUserId($space_name, $user_id, $page_size = Builder::PAGE_SIZE)
+    {
+        $query = static::query();
+        $query->where("AND({Customer} = '{$user_id}, {Space} = '{$space_name})'");
+        $page   = $query->get($page_size);
+        $offset = $query->getOffset();
+
+        return static::collect($page, $offset);
+    }
 }

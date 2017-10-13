@@ -32,7 +32,7 @@ class Person extends Model
     public static function getByPersonId($person_id)
     {
         $query = static::query();
-        $query->where("{id} = '{$person_id}'");
+        $query->where("AND({id} = '{$person_id}')");
         $obj   = new static($query->first());
         return $obj;
     }

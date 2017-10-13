@@ -157,6 +157,13 @@ class Controller extends BaseController
         return response()->json($Checkins->toArray());
     }
 
+    public function personCheckins(Request $request, $id_person)
+    {
+        $Checkins = CheckIn::getByUserId($request->get('name'), $id_person, 20)->transform();
+        //$Checkins = CheckIn::getUniqueBySpaceId('recxNbj8oGnzIioEj')->transform();
+        return response()->json($Checkins->toArray());
+    }
+
     /**
      * Get the checkins table from airtable
      *
@@ -178,6 +185,29 @@ class Controller extends BaseController
         // $Space = Space::fractalGet(20, $id);
         $Space = Space::getBySpaceName($request->get('name'))->transform();
         return response()->json($Space);
+    }
+
+    public function person(Request $request, $id_person)
+    {
+        return response()->json([
+            'data' => [
+                'id'           =>  $id_person,
+                'firstName'    => 'First',
+                'lastName'     => 'LastName',
+                'email'        => 'some@email.com',
+                'phone'        => '(321) 654 6548',
+                'customerTeam' => 'myteam',
+                'organization' => 'Gustherhaner',
+                'type'         => 'Participant',
+                'program'      => 'Coworking experience',
+                'zipOffice'    => '6060',
+                'name'         => 'First LastName',
+                'orgAbbr'      => 'GHS',
+                'created'      => 'createdTime'
+            ]
+        ]);
+        //$Space = Person::getByPersonId($id_person)->transform();
+        //return response()->json($Space);
     }
 
     /**

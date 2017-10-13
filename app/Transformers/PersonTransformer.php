@@ -11,6 +11,7 @@ class PersonTransformer extends AbstractTransformer
         'firstName'    => 'fields->First Name',
         'lastName'     => 'fields->Last Name',
         'email'        => 'fields->Email',
+        'phone'        => 'fields->Phone',
         'customerTeam' => 'fields->Customer Team',
         'organization' => 'fields->Organization',
         'type'         => 'fields->Type',
