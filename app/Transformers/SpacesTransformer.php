@@ -13,6 +13,7 @@ class SpacesTransformer extends AbstractTransformer
         'address'    => 'fields->Address',
         'accountant' => 'fields->Key Acount Coworking Spaces->name',
         'accountantEmail' => 'fields->Key Acount Coworking Spaces->email',
+        'accountantPhoto' => 'fields->Key Acount Coworking Spaces->photo',
         'publicEmail'=> 'fields->Public Email',
         'publicPhone'=> 'fields->Public Phone',
         'address'    => 'fields->Address',
