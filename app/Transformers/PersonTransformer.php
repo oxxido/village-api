@@ -12,8 +12,6 @@ class PersonTransformer extends AbstractTransformer
         'lastName'     => 'fields->Last Name',
         'email'        => 'fields->Email',
         'phone'        => 'fields->Phone',
-        'photoUrl'     => 'fields->Photo[0]->url',
-        'photothumb'   => 'fields->Photo[0]->thumbnails->large->url',
         'customerTeam' => 'fields->Customer Team',
         'organizationId' => 'fields->Organization',
         'organization' => 'fields->OrganizationName',
@@ -28,7 +26,7 @@ class PersonTransformer extends AbstractTransformer
     public function transform(Model $resource)
     {
         $transformation = parent::transform($resource); // This is an array, modify it as needed
-
+        $transformation['photo'] = array_shift($resource->fields->Photo);
         return $transformation;
     }
 }

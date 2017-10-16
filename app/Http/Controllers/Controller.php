@@ -95,6 +95,22 @@ class Controller extends BaseController
         //return response()->json(['Status' => '200']);
     }
 
+    public function addCheckIn(Request $request) {
+        $personId = $request->input('customer');
+        $spaceId = $request->get('id');
+        $stringDate = $request->input('date');
+        if(!$stringDate) {
+            $stringDate = date('Y-m-d\TH:i:s\.000\Z');
+        }
+        // first test: override person and space id:
+        // $personId = 'recLTLOltJ1jOesU5';
+        // $spaceId = 'recNGytQ66mhRPUPp';
+        // $stringDate = date('Y-m-d\TH:i:s\.000\Z');
+        $Person = Person::getByPersonId($personId);
+        $check_in = $Person->insertCheckIn($spaceId, $stringDate);
+        return response()->json($check_in->transform());
+    }
+
     /**
      * Get the people table from airtable
      *

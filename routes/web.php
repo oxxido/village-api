@@ -30,6 +30,7 @@ $router->group(['middleware'=>'auth'], function () use ($router, $offsetRegex, $
     $router->get('/person' .        $idRegex, ['uses' => 'Controller@person']);
     // $router->get('/personcheckins'.$idRegex, ['uses' => 'Controller@personCheckins']);
     $router->get('/personcheckins/{name}', ['uses' => 'Controller@personCheckins']);
+    $router->post('/checkin', ['uses' => 'Controller@addCheckIn']);
     /*$router->get('user/profile', function () {
         // Uses Auth Middleware
     });*/
