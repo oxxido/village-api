@@ -25,4 +25,16 @@ class Space extends Model
         //return static::collect($page, $offset);
         return $obj;
     }
+
+    public static function getActive($offset)
+    {
+        $page_size = 100;
+        $query = static::query();
+        $query->where("NOT({VillageOffice ID} = '')");
+        $page   = $query->get($page_size);
+        $offset = $query->getOffset();
+
+        return static::collect($page, $offset);
+
+    }
 }

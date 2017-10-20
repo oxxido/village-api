@@ -187,7 +187,8 @@ class Controller extends BaseController
      */
     public function spaces($offset = null)
     {
-        $Spaces = Space::fractalGet(20, $offset);
+        //$Spaces = Space::fractalGet(200, $offset);
+        $Spaces = Space::getActive($offset)->transform();
         return response()->json($Spaces->toArray());
     }
 
