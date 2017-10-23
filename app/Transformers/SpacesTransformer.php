@@ -16,6 +16,8 @@ class SpacesTransformer extends AbstractTransformer
         'publicEmail'=> 'fields->Public Email',
         'publicPhone'=> 'fields->Public Phone',
         'address'    => 'fields->Address',
+        'twitterHandle' => 'fields->Twitter Handle',
+        'password'   => 'fields->Password',
         'hash'       => 'fields->Space Hash',
     ];
 
