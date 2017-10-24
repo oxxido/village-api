@@ -160,23 +160,95 @@ class Controller extends BaseController
     }
 
     /**
+     * Get all rows on the checkins table from airtable
+     * and calculate the billing part
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function billing($offset = null, Request $request)
+    {
+        $Checkins = CheckIn::getBySpaceName($request->get('name'), 100)->transform();
+        $currentCheckins = $Checkins->toArray();
+        $periods = [];
+        foreach($currentCheckins['data'] as $checkin) {
+            // if date not set, record is wrong, omitting...
+            if (isset($checkin['date'])) {
+                $idx = intval(date("ym", strtotime($checkin['date'])));
+                if (isset($periods[$idx])) {
+                    $periods[$idx]['checkins']++;
+                    $periods[$idx]['cash'] += 100;
+                    $periods[$idx]['shares'] += 50;
+                } else {
+                    // current period:
+                    $period = [];
+                    $period['month'] = date("Y F", strtotime($checkin['date']));
+                    $period['checkins'] = 1;
+                    $period['cash'] = 100;
+                    $period['shares'] = 50;
+                    $period['idx'] = $idx;
+                    $period['link'] = date("Y/m", strtotime($checkin['date']));
+                    $periods[$idx] = $period;
+                }
+            }
+        }
+        krsort($periods);
+        $result = [];
+        foreach($periods as $period) {
+            $result[] = $period;
+        }
+        return response()->json(['data'=>$result]);
+    }
+
+    public function period(Request $request, $year, $month)
+    {
+        $Checkins = CheckIn::getByPeriod($request->get('name'), $year, $month, 100)->transform();
+        $currentCheckins = $Checkins->toArray();
+        $periods = $result = $meta = [];
+        $result = [];
+        $meta['title'] = date("Y F", strtotime($year.'-'.$month.'-02'));
+        $meta['totalCheckins'] = 0;
+        foreach($currentCheckins['data'] as $checkin) {
+            // if date not set, record is wrong, omitting...
+            if (isset($checkin['email'])) {
+                $idx = $checkin['email'];
+                if (isset($periods[$idx])) {
+                    $periods[$idx]['checkins'][] = $checkin;
+                } else {
+                    // current period:
+                    $period = [];
+                    $period['checkins'] = [$checkin];
+                    $period['name'] = $checkin['name'];
+                    $period['email'] = $checkin['email'];
+                    $period['idx'] = $idx;
+                    $periods[$idx] = $period;
+                }
+                $meta['totalCheckins']++;
+            }
+        }
+        foreach($periods as $period) {
+            $result[] = $period;
+        }
+        return response()->json([
+            'data'=>$result,
+            'meta'=>$meta
+        ]);
+    }
+
+    /**
      * Get the checkins table from airtable
      *
      * @return \Illuminate\Http\Response
      */
     public function checkins($offset = null, Request $request)
     {
-        //$Checkins = CheckIn::fractalGet(20, $offset);
         //Log::info('space id: '.$request->get('id'));
         $Checkins = CheckIn::getBySpaceName($request->get('name'), 20)->transform();
-        //$Checkins = CheckIn::getUniqueBySpaceId('recxNbj8oGnzIioEj')->transform();
         return response()->json($Checkins->toArray());
     }
 
     public function personCheckins(Request $request, $name)
     {
         $Checkins = CheckIn::getByUserId($request->get('name'), $name, 20)->transform();
-        //$Checkins = CheckIn::getUniqueBySpaceId('recxNbj8oGnzIioEj')->transform();
         return response()->json($Checkins->toArray());
     }
 

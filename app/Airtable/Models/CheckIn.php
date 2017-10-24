@@ -42,4 +42,16 @@ class CheckIn extends Model
 
         return static::collect($page, $offset);
     }
+
+    public static function getByPeriod($space_name, $year, $month, $page_size = Builder::PAGE_SIZE)
+    {
+        $query = static::query();
+
+        $query->where("AND(MONTH({date}) = {$month}, YEAR({date}) = {$year})");
+
+        $page   = $query->get($page_size);
+        $offset = $query->getOffset();
+
+        return static::collect($page, $offset);
+    }
 }

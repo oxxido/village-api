@@ -25,8 +25,8 @@ class CheckinsTransformer extends AbstractTransformer
     public function transform(Model $resource)
     {
         $transformation = parent::transform($resource); // This is an array, modify it as needed
-        $transformation['weekday'] = date('l', strtotime($transformation['date']));
-        $transformation['time'] = date('H:i', strtotime($transformation['timestamp']));
+        $transformation['weekday'] = isset($transformation['date'])? date('l', strtotime($transformation['date'])): '';
+        $transformation['time'] = isset($transformation['timestamp'])? date('H:i', strtotime($transformation['timestamp'])):'';
         return $transformation;
     }
 }

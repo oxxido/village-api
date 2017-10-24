@@ -15,25 +15,22 @@
 $offsetRegex = '[/{offset:[A-Za-z0-9\/]+}]';
 $idRegex = '[/{id:[A-Za-z0-9\/]+}]';
 $router->group(['middleware'=>'auth'], function () use ($router, $offsetRegex, $idRegex) {
-    $router->get('/', ['uses' => 'Controller@index']);
-    $router->get('/people' .        $offsetRegex, ['uses' => 'Controller@people']);
+    $router->get('/',         ['uses' => 'Controller@index']);
+    $router->get('/space',    ['uses' => 'Controller@space']);
+    $router->post('/checkin', ['uses' => 'Controller@addCheckIn']);
 
+    $router->get('/people' .        $offsetRegex, ['uses' => 'Controller@people']);
     $router->get('/organizations' . $offsetRegex, ['uses' => 'Controller@organizations']);
     $router->get('/checkins' .      $offsetRegex, ['uses' => 'Controller@checkins']);
+    $router->get('/billing' .       $offsetRegex, ['uses' => 'Controller@billing']);
     $router->get('/plans' .         $offsetRegex, ['uses' => 'Controller@plans']);
-    $router->get('/space',                        ['uses' => 'Controller@space']);
+    //$router->get('/admins' .      $offsetRegex, ['uses' => 'Controller@admins']);
+    //$router->get('/admin' .       $offsetRegex, ['uses' => 'Controller@admin']);
+    $router->get('/person' .        $idRegex,     ['uses' => 'Controller@person']);
 
-    $router->get('/admins' .        $offsetRegex, ['uses' => 'Controller@admins']);
-    $router->get('/admin' .         $offsetRegex, ['uses' => 'Controller@admin']);
-
-    $router->get('/person' .        $idRegex, ['uses' => 'Controller@person']);
-    // $router->get('/personcheckins'.$idRegex, ['uses' => 'Controller@personCheckins']);
     $router->get('/personcheckins/{name}', ['uses' => 'Controller@personCheckins']);
-    $router->post('/checkin', ['uses' => 'Controller@addCheckIn']);
-    /*$router->get('user/profile', function () {
-        // Uses Auth Middleware
-    });*/
+    $router->get('/period/{year}/{month}', ['uses' => 'Controller@period']);
 });
 
-$router->post('/login', ['uses' => 'Controller@login']);
-$router->get('/spaces' .        $offsetRegex, ['uses' => 'Controller@spaces']);
+$router->get('/spaces' . $offsetRegex, ['uses' => 'Controller@spaces']);
+$router->post('/login',                ['uses' => 'Controller@login' ]);
