@@ -139,4 +139,11 @@ class Builder
 
         return $this->airtable->saveContent($table, $fields);
     }
+
+    public function put($fields, $table = null)
+    {
+        $table = $table?? $this->table;
+
+        return $this->airtable->updateContent($table, $fields);
+    }
 }

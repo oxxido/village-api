@@ -3,6 +3,7 @@
 namespace App\Airtable\Models;
 
 use stdClass;
+use Exception;
 use App\Airtable\Builder;
 use App\Airtable\Collection;
 use Illuminate\Contracts\Support\Jsonable;
@@ -211,5 +212,20 @@ abstract class Model implements Arrayable, Jsonable
         $fractal = fractal($this, static::transformer());
 
         return $fractal->toArray();
+    }
+
+    public function update(array $fields = [])
+    {
+        $path = $this->getTable() . '/' . $this->attributes->id;
+        $response  = $this->getQuery()->put($fields, $path);
+        $decoded = json_decode($response);
+
+        if ($error = ($decoded->error?? null)) {
+            throw new Exception($error->type . ': ' . $error->message);
+        }
+
+        $this->attributes = $decoded;
+
+        return true;
     }
 }
