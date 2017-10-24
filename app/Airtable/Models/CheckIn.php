@@ -10,14 +10,12 @@ class CheckIn extends Model
     protected static $table = 'check-ins';
     protected static $transformer = CheckinsTransformer::class;
 
-    public static function getBySpaceName($space_name, $page_size = Builder::PAGE_SIZE)
+    public static function getBySpaceName($space_name)
     {
         $query = static::query();
         $query->where("{Space} = '{$space_name}'");
-        $page   = $query->get($page_size);
-        $offset = $query->getOffset();
 
-        return static::collect($page, $offset);
+        return static::collect($query->all());
     }
 
     public static function getUniqueUserBySpaceName($space_name, $page_size = Builder::PAGE_SIZE)
@@ -43,15 +41,12 @@ class CheckIn extends Model
         return static::collect($page, $offset);
     }
 
-    public static function getByPeriod($space_name, $year, $month, $page_size = Builder::PAGE_SIZE)
+    public static function getByPeriod($space_name, $year, $month)
     {
         $query = static::query();
 
         $query->where("AND(MONTH({date}) = {$month}, YEAR({date}) = {$year})");
 
-        $page   = $query->get($page_size);
-        $offset = $query->getOffset();
-
-        return static::collect($page, $offset);
+        return static::collect($query->all(), $query->getOffset());
     }
 }
