@@ -40,6 +40,25 @@ class Builder
         return $records;
     }
 
+    public function all()
+    {
+        $all            = [];
+        $current_offset = null;
+
+        do {
+            $previous_offset = $current_offset;
+            if (!($page = $this->get())) {
+                break;
+            }
+
+            $all = array_merge($all, $page);
+
+            $current_offset = $this->getOffset();
+        } while ($previous_offset !== $current_offset);
+
+        return $all;
+    }
+
     public function first()
     {
         $this->pageSize = 1;
@@ -135,14 +154,14 @@ class Builder
 
     public function post($fields, $table = null)
     {
-        $table = $table?? $this->table;
+        $table = $table ?? $this->table;
 
         return $this->airtable->saveContent($table, $fields);
     }
 
     public function put($fields, $table = null)
     {
-        $table = $table?? $this->table;
+        $table = $table ?? $this->table;
 
         return $this->airtable->updateContent($table, $fields);
     }
