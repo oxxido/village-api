@@ -15,9 +15,11 @@
 $offsetRegex = '[/{offset:[A-Za-z0-9\/]+}]';
 $idRegex = '[/{id:[A-Za-z0-9\/]+}]';
 $router->group(['middleware'=>'auth'], function () use ($router, $offsetRegex, $idRegex) {
-    $router->get('/',         ['uses' => 'Controller@index']);
-    $router->get('/space',    ['uses' => 'Controller@space']);
-    $router->post('/checkin', ['uses' => 'Controller@addCheckIn']);
+    $router->get('/',      ['uses' => 'Controller@index']);
+    $router->get('/space', ['uses' => 'Controller@space']);
+
+    $router->post('/checkin',   ['uses' => 'Controller@addCheckIn']);
+    $router->post('/settings',  ['uses' => 'Controller@updateSettings']);
 
     $router->get('/people' .        $offsetRegex, ['uses' => 'Controller@people']);
     $router->get('/organizations' . $offsetRegex, ['uses' => 'Controller@organizations']);

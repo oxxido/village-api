@@ -116,13 +116,26 @@ class Controller extends BaseController
         if(!$stringDate) {
             $stringDate = date('Y-m-d\TH:i:s\.000\Z');
         }
-        // first test: override person and space id:
-        // $personId = 'recLTLOltJ1jOesU5';
-        // $spaceId = 'recNGytQ66mhRPUPp';
-        // $stringDate = date('Y-m-d\TH:i:s\.000\Z');
-        $Person = Person::getByPersonId($personId);
-        $check_in = $Person->insertCheckIn($spaceId, $stringDate);
-        return response()->json($check_in->transform());
+        if ($personId && $spaceId) {
+            $Person = Person::getByPersonId($personId);
+            $check_in = $Person->insertCheckIn($spaceId, $stringDate);
+            return response()->json($check_in->transform());
+        }
+    }
+
+    public function updateSettings(Request $request) {
+        $space = Space::getBySpaceId($request->get('id'));
+
+        $space->update([
+                'Name'          => $request->input('name'),
+                'Public Phone'  => $request->input('publicPhone'),
+                'Public Email'  => $request->input('publicEmail'),
+                'Address'       => $request->input('address'),
+                'Twitter Handle'=> $request->input('twitterHandle'),
+                'Password'      => $request->input('password')
+            ]);
+
+        return $space->transform();
     }
 
     /**
@@ -137,7 +150,7 @@ class Controller extends BaseController
         //$offset = $request->get('offset')?$request->get('offset'):null;
 
         // $person = Person::fractalGet(20, $offset);
-        $people      = CheckIn::getUniqueUserBySpaceName($request->get('name'), 20)->transform();
+        $people      = CheckIn::getUniqueUserBySpaceId($request->get('id'), 20)->transform();
         $peopleArray = $people->toArray();
         $uniqueArray = $temp = [];
         /*foreach ($peopleArray['data'] as $person) {
@@ -182,7 +195,7 @@ class Controller extends BaseController
      */
     public function billing($offset = null, Request $request)
     {
-        $Checkins = CheckIn::getBySpaceName($request->get('name'), 100)->transform();
+        $Checkins = CheckIn::getBySpaceId($request->get('id'), 100)->transform();
         $currentCheckins = $Checkins->toArray();
         $periods = [];
         foreach($currentCheckins['data'] as $checkin) {
@@ -257,7 +270,7 @@ class Controller extends BaseController
     public function checkins($offset = null, Request $request)
     {
         //Log::info('space id: '.$request->get('id'));
-        $Checkins = CheckIn::getBySpaceName($request->get('name'), 20)->transform();
+        $Checkins = CheckIn::getBySpaceId($request->get('id'), 20)->transform();
 
         return response()->json($Checkins->toArray());
     }
@@ -265,7 +278,7 @@ class Controller extends BaseController
     public function personCheckins(Request $request, $name)
     {
 
-        $Checkins = CheckIn::getByUserId($request->get('name'), $name, 20)->transform();
+        $Checkins = CheckIn::getByUserId($request->get('id'), $name, 20)->transform();
 
         return response()->json($Checkins->toArray());
     }
@@ -291,7 +304,7 @@ class Controller extends BaseController
     public function space(Request $request)
     {
         // $Space = Space::fractalGet(20, $id);
-        $Space = Space::getBySpaceName($request->get('name'))->transform();
+        $Space = Space::getBySpaceId($request->get('id'))->transform();
 
         return response()->json($Space);
     }

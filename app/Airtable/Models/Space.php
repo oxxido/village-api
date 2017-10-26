@@ -20,9 +20,16 @@ class Space extends Model
         $query = static::query();
         $query->where("{Name} = '{$space_name}'");
         $obj   = new static($query->first());
-        //$offset = $query->getOffset();
 
-        //return static::collect($page, $offset);
+        return $obj;
+    }
+
+    public static function getBySpaceId($space_id)
+    {
+        $query = static::query();
+        $query->where("{SpaceId} = '{$space_id}'");
+        $obj   = new static($query->first());
+
         return $obj;
     }
 
