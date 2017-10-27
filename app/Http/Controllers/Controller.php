@@ -195,7 +195,7 @@ class Controller extends BaseController
      */
     public function billing($offset = null, Request $request)
     {
-        $Checkins = CheckIn::getBySpaceId($request->get('id'), 100)->transform();
+        $Checkins = CheckIn::getBySpaceId($request->get('id'))->transform();
         $currentCheckins = $Checkins->toArray();
         $periods = [];
         foreach($currentCheckins['data'] as $checkin) {
@@ -217,11 +217,13 @@ class Controller extends BaseController
                     $period['link'] = date("Y/m", strtotime($checkin['date']));
                     $periods[$idx] = $period;
                 }
+
             }
         }
         krsort($periods);
         $result = [];
         foreach($periods as $period) {
+            $period['CHF'] = $this->calculateCHF($period['checkins']);
             $result[] = $period;
         }
         return response()->json(['data'=>$result]);
@@ -243,23 +245,55 @@ class Controller extends BaseController
                     $periods[$idx]['checkins'][] = $checkin;
                 } else {
                     // current period:
-                    $period = [];
-                    $period['checkins'] = [$checkin];
-                    $period['name'] = $checkin['name'];
-                    $period['email'] = $checkin['email'];
-                    $period['idx'] = $idx;
-                    $periods[$idx] = $period;
+                    $person = [];
+                    $person['checkins'] = [$checkin];
+                    $person['name'] = $checkin['name'];
+                    $person['email'] = $checkin['email'];
+                    $person['idx'] = $idx;
+                    $periods[$idx] = $person;
                 }
-                $meta['totalCheckins']++;
             }
         }
-        foreach($periods as $period) {
-            $result[] = $period;
+        foreach($periods as $person) {
+            $person['checkins'] = $this->onlyUniqueCheckins($person['checkins']);
+            $meta['totalCheckins'] += count($person['checkins']);
+            $person['CHF'] = $this->calculateCHF($person['checkins']);
+            $result[] = $person;
         }
         return response()->json([
             'data'=>$result,
             'meta'=>$meta
         ]);
+    }
+
+    public function onlyUniqueCheckins($checkins) {
+        $temp = array();
+        $result = array();
+        foreach($checkins as $checkin) {
+            if (!isset($temp[$checkin['date']])) {
+                $result[$checkin['date']] = $checkin;
+                $temp[$checkin['date']] = true;
+            }
+        }
+        ksort($result);
+        return array_values($result);
+    }
+
+    public function calculateCHF($checkins) {
+        $checks = is_array($checkins)? count($checkins): (is_numeric($checkins)? $checkins:0);
+        if ($checks < 2) {
+            return 15;
+        }
+        $increment = 0;
+        for($i = 1; $i <= ($checks-1); $i++)
+        {
+            $increment += ($i * 0.50);
+        }
+        $result = ($checks * 15) + $increment;
+        if ($result > 400) {
+            $result = 400;
+        }
+        return $result;
     }
 
     /**
