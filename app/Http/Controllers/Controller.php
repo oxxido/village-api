@@ -159,7 +159,7 @@ class Controller extends BaseController
         //$offset = $request->get('offset')?$request->get('offset'):null;
 
         // $person = Person::fractalGet(20, $offset);
-        $people      = CheckIn::getUniqueUserBySpaceId($request->get('id'), 20)->transform();
+        $people      = CheckIn::getUniqueUserBySpaceId($request->get('id'), 100)->transform();
         $peopleArray = $people->toArray();
         $uniqueArray = $temp = [];
         /*foreach ($peopleArray['data'] as $person) {
@@ -171,8 +171,13 @@ class Controller extends BaseController
         foreach ($peopleArray['data'] as $person) {
             if (isset($temp[$person['name']])) {
                 $temp[$person['name']]['count']++;
+                if (date("m", time()) == date("m", strtotime($person['date']))) {
+                    $temp[$person['name']]['thisMonth']++;
+                }
             } else {
-                $temp[$person['name']]          = $person;
+                $temp[$person['name']]              = $person;
+                $temp[$person['name']]['thisMonth'] =
+                    (date("m", time()) == date("m", strtotime($person['date']))) ? 1 : 0;
                 $temp[$person['name']]['count'] = 1;
             }
         }
