@@ -36,3 +36,4 @@ $router->group(['middleware'=>'auth'], function () use ($router, $offsetRegex, $
 
 $router->get('/spaces' . $offsetRegex, ['uses' => 'Controller@spaces']);
 $router->post('/login',                ['uses' => 'Controller@login' ]);
+$router->post('/autologin',            ['uses' => 'Controller@autologin' ]);

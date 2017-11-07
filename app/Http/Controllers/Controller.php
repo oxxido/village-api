@@ -82,6 +82,15 @@ class Controller extends BaseController
         return $this->getRecordByFilter('Spaces', $params);
     }
 
+    private function getAutoLoginInfo($space)
+    {
+        $params = [
+            "filterByFormula" => "AND({Space Hash} = '" . $space . "')",
+        ];
+
+        return $this->getRecordByFilter('Spaces', $params);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -395,6 +404,31 @@ class Controller extends BaseController
             $spaceInfo = $this->getSpaceInfo($request->input('space'));
             if ($spaceInfo) {
                 $response['reason'] = 'Password is incorrect';
+            } else {
+                $response['reason'] = 'Space not found';
+            }
+        }
+
+        return response()->json($response);
+    }
+
+    public function autologin(Request $request)
+    {
+        $response = ['loggedin' => false];
+
+        $loginInfo = $this->getAutoLoginInfo($request->input('space'));
+        if ($loginInfo) {
+            $response['loggedin'] = true;
+            //encode data:
+            $toEnctrypt          = "{$loginInfo[0]->id}|{$loginInfo[0]->fields->Name}|" . str_random(15);
+            $response['payload'] = [
+                'hash' => Crypt::encrypt($toEnctrypt),
+                'name' => $loginInfo[0]->fields->Name,
+            ];
+        } else {
+            $spaceInfo = $this->getSpaceInfo($request->input('space'));
+            if ($spaceInfo) {
+                $response['reason'] = 'Something went wrong, please try again';
             } else {
                 $response['reason'] = 'Space not found';
             }
