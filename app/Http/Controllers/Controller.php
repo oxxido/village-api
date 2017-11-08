@@ -245,12 +245,17 @@ class Controller extends BaseController
 
     public function period(Request $request, $year, $month)
     {
-        $Checkins = CheckIn::getByPeriod($request->get('name'), $year, $month, 100)->transform();
+        $Checkins = CheckIn::getByPeriod($request->get('id'), $year, $month)->transform();
         $currentCheckins = $Checkins->toArray();
         $periods = $result = $meta = [];
         $result = [];
         $meta['title'] = date("Y F", strtotime($year.'-'.$month.'-02'));
         $meta['totalCheckins'] = 0;
+        // HARDCODED for now
+        $meta['pdf'] = [];
+        $meta['pdf']['title'] = 'VO-0004-June2017.pdf';
+        $meta['pdf']['url'] = 'http://someurl.com/VO-0004-June2017.pdf';
+        // END of hardcoded
         foreach($currentCheckins['data'] as $checkin) {
             // if date not set, record is wrong, omitting...
             if (isset($checkin['email'])) {

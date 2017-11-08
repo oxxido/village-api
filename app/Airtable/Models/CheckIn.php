@@ -15,7 +15,7 @@ class CheckIn extends Model
         $query = static::query();
         $query->where("{SpaceId} = '{$space_id}'");
 
-        return static::collect($query->all());
+        return static::collect($query->all(), $query->getOffset());
     }
 
     public static function getUniqueUserBySpaceId($space_id, $page_size = Builder::PAGE_SIZE)
@@ -41,11 +41,11 @@ class CheckIn extends Model
         return static::collect($page, $offset);
     }
 
-    public static function getByPeriod($space_name, $year, $month)
+    public static function getByPeriod($space_id, $year, $month)
     {
         $query = static::query();
 
-        $query->where("AND(MONTH({date}) = {$month}, YEAR({date}) = {$year})");
+        $query->where("AND(MONTH({date}) = {$month}, YEAR({date}) = {$year}, {SpaceId} = '{$space_id}')");
 
         return static::collect($query->all(), $query->getOffset());
     }
