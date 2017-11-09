@@ -141,6 +141,7 @@ class Controller extends BaseController
                 'Public Email'  => $request->input('publicEmail'),
                 'Address'       => $request->input('address'),
                 'Twitter Handle'=> $request->input('twitterHandle'),
+                'IBAN'          => $request->input('IBAN'),
                 'Password'      => $request->input('password')
             ]);
 
