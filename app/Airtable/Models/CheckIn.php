@@ -28,6 +28,16 @@ class CheckIn extends Model
 
         return static::collect($page, $offset);
     }
+    public static function getPaginatedBySpaceId($space_id, $page_size = Builder::PAGE_SIZE)
+    {
+        $query = static::query();
+        $query->where("{SpaceId} = '{$space_id}'");
+        $query->view("unique");
+        $page   = $query->get($page_size);
+        $offset = $query->getOffset();
+
+        return static::collect($page, $offset);
+    }
 
     public static function getByUserId($space_id, $user_id, $page_size = Builder::PAGE_SIZE)
     {

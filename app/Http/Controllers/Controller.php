@@ -129,6 +129,8 @@ class Controller extends BaseController
             $Person = Person::getByPersonId($personId);
             $check_in = $Person->insertCheckIn($spaceId, $stringDate);
             return response()->json($check_in->transform());
+        } else {
+            return response()->json(['success'=>false, 'reason'=>'You need to fill both customer and date']);
         }
     }
 
@@ -324,7 +326,7 @@ class Controller extends BaseController
     public function checkins($offset = null, Request $request)
     {
         //Log::info('space id: '.$request->get('id'));
-        $Checkins = CheckIn::getBySpaceId($request->get('id'), 20)->transform();
+        $Checkins = CheckIn::getPaginatedBySpaceId($request->get('id'), 20)->transform();
 
         return response()->json($Checkins->toArray());
     }
