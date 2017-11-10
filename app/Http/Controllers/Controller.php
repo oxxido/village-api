@@ -325,8 +325,8 @@ class Controller extends BaseController
      */
     public function checkins($offset = null, Request $request)
     {
-        //Log::info('space id: '.$request->get('id'));
-        $Checkins = CheckIn::getPaginatedBySpaceId($request->get('id'), 20)->transform();
+        //Log::info('Offset: '. $offset );
+        $Checkins = CheckIn::getBySpaceId($request->get('id'))->transform();
 
         return response()->json($Checkins->toArray());
     }

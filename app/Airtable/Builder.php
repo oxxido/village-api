@@ -5,6 +5,7 @@ namespace App\Airtable;
 use TANIOS\Airtable\Airtable;
 use TANIOS\Airtable\Request;
 use TANIOS\Airtable\Response;
+use Log;
 
 class Builder
 {
@@ -137,6 +138,7 @@ class Builder
 
     protected function fetch()
     {
+        // Log::info('Params: '.json_encode($this->params()));
         $this->request = $this->airtable->getContent($this->table, $this->params());
 
         return $this->response = $this->request->getResponse();

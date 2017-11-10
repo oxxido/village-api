@@ -14,7 +14,7 @@ class CheckIn extends Model
     {
         $query = static::query();
         $query->where("{SpaceId} = '{$space_id}'");
-
+        $query->view("unique");
         return static::collect($query->all(), $query->getOffset());
     }
 
@@ -28,11 +28,13 @@ class CheckIn extends Model
 
         return static::collect($page, $offset);
     }
-    public static function getPaginatedBySpaceId($space_id, $page_size = Builder::PAGE_SIZE)
+    public static function getPaginatedBySpaceId($space_id, $page_size = Builder::PAGE_SIZE, $offset = null)
     {
         $query = static::query();
         $query->where("{SpaceId} = '{$space_id}'");
-        $query->view("unique");
+        // $query->sortBy("Timestamp", "asc");
+        // $query->view("unique");
+        $query->setOffset($offset);
         $page   = $query->get($page_size);
         $offset = $query->getOffset();
 
