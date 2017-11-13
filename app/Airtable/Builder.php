@@ -87,7 +87,7 @@ class Builder
 
     public function sortBy($field, $direction = 'asc')
     {
-        array_push($this->sort, ['field' => $field, 'direction' => $direction]);
+        array_push($this->sort, [$field => $direction]);
 
         return $this;
     }
@@ -124,7 +124,7 @@ class Builder
     {
         $params = [
             'pageSize'        => $this->pageSize,
-            'sort'            => $this->sort ? json_encode($this->sort) : null,
+            'sort'            => $this->sort ? $this->parseSort($this->sort) : null,
             'fields'          => $this->fields ? json_encode($this->fields) : null,
             'filterByFormula' => $this->filterByFormula ?? null,
             'offset'          => $this->offset ?? null,
@@ -166,5 +166,23 @@ class Builder
         $table = $table ?? $this->table;
 
         return $this->airtable->updateContent($table, $fields);
+    }
+
+    protected function parseSort($sorting_arrays)
+    {
+        $sorts = [];
+        foreach ($sorting_arrays as $index => $sorting_array) {
+            $field     = array_first(array_keys($sorting_array));
+            $direction = reset($sorting_array);
+
+            $field_key             = "sort[$index][field]";
+            $field_value           = $field;
+            $direction_key         = "sort[$index][direction]";
+            $direction_value       = $direction;
+            $sorts[$field_key]     = $field_value;
+            $sorts[$direction_key] = $direction_value;
+        }
+
+        return $sorts;
     }
 }

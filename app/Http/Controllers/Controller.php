@@ -98,12 +98,14 @@ class Controller extends BaseController
      */
     public function index()
     {
-        $space = Space::first();
-        $space->update([
-            'Name' => 'VillageOffice Uferbao',
-        ]);
+        //$space = Space::first();
+        //$space->update([
+        //    'Name' => 'VillageOffice Uferbao',
+        //]);
 
-        return $space->transform();
+        $spaces = Space::collect(Space::query()->sortBy('Name', 'asc')->get());
+
+        return $spaces->transform();
         //$person = Person::fractalGet(20);
         //return response()->json($person->toArray());
         //return response()->json(Spaces::first());
