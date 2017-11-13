@@ -124,9 +124,14 @@ class Controller extends BaseController
         $personId = $request->input('customer');
         $spaceId = $request->get('id');
         $stringDate = $request->input('date');
-        if(!$stringDate) {
+        $stringTime = $request->input('time');
+        /*if(!$stringDate) {
             $stringDate = date('Y-m-d\TH:i:s\.000\Z');
-        }
+        }*/
+        //$date = Date('c', strtotime($stringDate . ' '.$stringTime));
+        $date = $stringDate . 'T' . $stringTime . ':00.000Z';
+        Log::info('date:' . $stringDate . ' '. $stringTime );
+        Log::info($date);
         if ($personId && $spaceId) {
             $Person = Person::getByPersonId($personId);
             $check_in = $Person->insertCheckIn($spaceId, $stringDate);
