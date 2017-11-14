@@ -125,16 +125,15 @@ class Controller extends BaseController
         $spaceId = $request->get('id');
         $stringDate = $request->input('date');
         $stringTime = $request->input('time');
-        /*if(!$stringDate) {
-            $stringDate = date('Y-m-d\TH:i:s\.000\Z');
-        }*/
-        //$date = Date('c', strtotime($stringDate . ' '.$stringTime));
+        $lastSeen = $request->input('last-seen');
+
         $date = $stringDate . 'T' . $stringTime . ':00.000Z';
+
         Log::info('date:' . $stringDate . ' '. $stringTime );
         Log::info($date);
         if ($personId && $spaceId) {
             $Person = Person::getByPersonId($personId);
-            $check_in = $Person->insertCheckIn($spaceId, $stringDate);
+            $check_in = $Person->insertCheckIn($spaceId, $date, $lastSeen);
             return response()->json($check_in->transform());
         } else {
             return response()->json(['success'=>false, 'reason'=>'You need to fill both customer and date']);

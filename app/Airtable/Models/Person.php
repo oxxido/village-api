@@ -11,12 +11,13 @@ class Person extends Model
     protected static $table = 'people';
     protected static $transformer = PersonTransformer::class;
 
-    public function insertCheckIn($space_id, $date_time)
+    public function insertCheckIn($space_id, $date_time, $lastSeen)
     {
         $fields = [
             'Timestamp' => $date_time,
             'Customer'  => [$this->id],
             'Space'     => [$space_id],
+            'Last seen' => $lastSeen,
         ];
 
         $response  = $this->getQuery()->post($fields, with(new CheckIn(new stdClass()))->getTable());
