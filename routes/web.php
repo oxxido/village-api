@@ -34,6 +34,7 @@ $router->group(['middleware'=>'auth'], function () use ($router, $offsetRegex, $
     $router->get('/period/{year}/{month}', ['uses' => 'Controller@period']);
 });
 
-$router->get('/spaces' . $offsetRegex, ['uses' => 'Controller@spaces']);
-$router->post('/login',                ['uses' => 'Controller@login' ]);
-$router->post('/autologin',            ['uses' => 'Controller@autologin' ]);
+$router->get('/spaces' . $offsetRegex,          ['uses' => 'Controller@spaces']);
+$router->post('/login',                         ['uses' => 'Controller@login' ]);
+$router->post('/autologin',                     ['uses' => 'Controller@autologin']);
+$router->get('/pdf/{spaceId}/{year}/{month}',   ['uses' => 'PdfController@createSpaceReport']);
