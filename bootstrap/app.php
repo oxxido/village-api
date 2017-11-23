@@ -96,7 +96,9 @@ $app->register(App\Providers\AirtableServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(Barryvdh\Cors\ServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
-
+$app->singleton('filesystem', function ($app) {
+    return $app->loadComponent('filesystems', Illuminate\Filesystem\FilesystemServiceProvider::class, 'filesystem');
+});
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
