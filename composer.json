@@ -11,7 +11,8 @@
         "sleiman/airtable-php": "^2.2",
         "barryvdh/laravel-cors": "^0.9.3",
         "spatie/laravel-fractal": "^5.2",
-        "dompdf/dompdf": "^0.8.1"
+        "dompdf/dompdf": "^0.8.1",
+        "league/flysystem": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
