@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use \TANIOS\Airtable\Airtable;
 use App\Airtable\Models\Person;
@@ -103,9 +105,28 @@ class Controller extends BaseController
         //    'Name' => 'VillageOffice Uferbao',
         //]);
 
-        $spaces = Space::collect(Space::query()->sortBy('Name', 'asc')->get());
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml('hello world');
 
-        return $spaces->transform();
+        // (Optional) Setup the paper size and orientation
+        // $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        $output = $dompdf->output();
+        $filename = 'asd.pdf';
+        $disk = Storage::disk('local');
+        $disk->put($filename, $output);
+
+        $path = "/downloads/{$filename}";
+        dd([
+            'title' => $filename,
+            'url' => $path
+        ]);
+        //$spaces = Space::collect(Space::query()->sortBy('Name', 'asc')->get());
+        //
+        //return $spaces->transform();
         //$person = Person::fractalGet(20);
         //return response()->json($person->toArray());
         //return response()->json(Spaces::first());
